@@ -1,0 +1,16 @@
+Cultur Project
+
+
+16, JAN
+1- Create Project
+2- create account app
+3- set core helper
+Exeption hander
+API ERROR
+Pagination
+
+4- set JWT
+5- Swagger
+6- Set App Env Variable
+
+----------------------------------------------------------------
