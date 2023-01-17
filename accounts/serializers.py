@@ -13,3 +13,14 @@ class RugularTokenObtainPairSerializer(TokenObtainPairSerializer):
             group=GroupEnum.REGULAR_GROUP,
             token=token
         )
+
+class CandidateTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        return AccountService.optain_access_token(
+            user=user,
+            group=GroupEnum.CANDIDATE_GROUP,
+            token=token
+        )

@@ -14,3 +14,42 @@ Pagination
 6- Set App Env Variable
 
 ----------------------------------------------------------------
+
+17, JAN
+
+Models comptition
+
+    1- Create Track
+        - Name
+
+    2- Create phase
+        - Name
+        - Track ForeignKey
+
+    3- Create pillar
+        - Name
+        - weight
+        - phase ForeignKey
+        - pallarStander MTM
+
+    4- create pillarStanders
+        - Name
+        - pillarStanderQuestions JSON field
+
+    5- screening
+        - Name
+        - Questions JSON field {"Q":yes/no}
+
+
+
+
+Expose endPoints
+Questions:
+Q1 - Creating Track and the list of it, are from the adminPage or endpoint?
+Q2 -
+
+
+----------------------------------------------------------------
+
+
+

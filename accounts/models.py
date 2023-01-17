@@ -8,6 +8,7 @@ from enum import Enum
 class GroupEnum(Enum):
     ADMIN_GROUP = 'Admin'
     REGULAR_GROUP = 'Rugular'
+    CANDIDATE_GROUP = 'Candidate'
 
 
 class CustomUser(AbstractUser):

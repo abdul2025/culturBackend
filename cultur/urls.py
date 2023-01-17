@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
-from accounts.views import RugularTokenObtainPairView
+from accounts.views import *
 from rest_framework_simplejwt.views import TokenRefreshView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
@@ -39,10 +39,14 @@ urlpatterns = [
 
     path(f'{api}/rugular/token/', RugularTokenObtainPairView.as_view(),
          name='rugular_token_obtain_pair'),
+    path(f'{api}/candidate/token/', CandidateTokenObtainPairView.as_view(),
+         name='candidate_token_obtain_pair'),
 
     #     path(f'{api}/supervisors/token/', JLSupervisorTokenObtainPairView.as_view(),
     #          name='jl_supervisor_token_obtain_pair'),
 
     path(f'{api}/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
+
+    path(f'{api}/tracks/', include("tracks.urls")),
 ]
