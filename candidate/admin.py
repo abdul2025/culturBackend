@@ -20,5 +20,16 @@ class CandidateProfileAdmin(admin.ModelAdmin):
         'user',
         'created_at',
     ]
+class CandidateApplicationAdmin(admin.ModelAdmin):
+    model = CandidateApplication
+    list_display = [
+        'profile',
+        'participation_title',
+    ]
+    list_filter = [
+        'created_at',
+    ]
+
 
 admin.site.register(CandidateProfile, CandidateProfileAdmin)
+admin.site.register(CandidateApplication, CandidateApplicationAdmin)

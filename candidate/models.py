@@ -5,6 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import time
 from core.utility import *
 from datetime import timedelta, datetime
+from crm.models import Tracks
 
 # Create your models here.
 class CandidateProfile(BaseModel):
@@ -48,6 +49,67 @@ class CandidateProfile(BaseModel):
         max_length=2048,
         blank=True, null=True
     )
+
+
+    previous_work_upload = models.FileField(
+        upload_to=PathAndRename(
+            'uploads/participation_file/{}'.format(time.strftime("%Y/%m/%d"))),
+        max_length=2048,
+        blank=True, null=True
+    )
+    support = models.IntegerField(
+        choices=(
+            (0, 'Yes'),
+            (1, 'No'),
+        ),
+        default=1
+    )
+
+    support_details = models.TextField(null=True, blank=True)
+    previous_activities = models.IntegerField(
+        choices=(
+            (0, 'Yes'),
+            (1, 'No'),
+        ),
+        default=1
+    )
+    previous_activities_yes = models.TextField(null=True, blank=True)
+    snapchat_url = models.URLField(null=True, blank=True)
+    instagram_media_url = models.URLField(null=True, blank=True)
+    youtube_media_url = models.URLField(null=True, blank=True)
+    linked_media_url = models.URLField(null=True, blank=True)
+    twitter_media_url = models.URLField(null=True, blank=True)
+    other_media_url = models.URLField(null=True, blank=True)
+    inspiration_story = models.TextField(null=True, blank=True)
+    additional_files = models.TextField(null=True, blank=True)
+
+    honors_upload = models.FileField(
+        upload_to=PathAndRename(
+            'uploads/honors_upload_file/{}'.format(time.strftime("%Y/%m/%d"))),
+        max_length=2048,
+        blank=True, null=True
+    )
+
+    local_award = models.FileField(
+        upload_to=PathAndRename(
+            'uploads/local_award_file/{}'.format(time.strftime("%Y/%m/%d"))),
+        max_length=2048,
+        blank=True, null=True
+    )
+
+    international_awards = models.FileField(
+        upload_to=PathAndRename(
+            'uploads/nternational_awards_file/{}'.format(time.strftime("%Y/%m/%d"))),
+        max_length=2048,
+        blank=True, null=True
+    )
+    tv_host = models.CharField(null=True, blank=True, max_length=255)
+    press_interviews = models.CharField(null=True, blank=True, max_length=255)
+    training_courses = models.CharField(null=True, blank=True, max_length=255)
+    academic_certifications = models.CharField(null=True, blank=True, max_length=255)
+    volunteering = models.URLField(null=True, blank=True)
+    book_permit = models.URLField(null=True, blank=True)
+    ownership_agreement = models.TextField(null=True, blank=True)
 
 
     def __str__(self):
@@ -106,3 +168,33 @@ class CandidateProfile(BaseModel):
     # class Meta:
     #     verbose_name = 'Munjiz profile'
     #     verbose_name_plural = 'Munjiz profiles'
+
+
+class CandidateApplication(BaseModel):
+    profile = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
+    track = models.ForeignKey(Tracks, on_delete=models.CASCADE)
+    participation_title = models.CharField(max_length=255)
+    participation_file = models.FileField(
+        upload_to=PathAndRename(
+            'uploads/participation_file/{}'.format(time.strftime("%Y/%m/%d"))),
+        max_length=2048,
+        blank=True, null=True
+    )
+    work_overview =  models.CharField(max_length=255)
+    year_of_execution = models.CharField(max_length=255)
+    work_publishing = models.IntegerField(
+        choices=(
+            (0, 'Yes'),
+            (1, 'No'),
+        ),
+        default=1
+    )
+    profitable_projects = models.IntegerField(
+        choices=(
+            (0, 'Yes'),
+            (1, 'No'),
+        ),
+        default=1
+    )
+    profitable_projects = models.IntegerField(default=0)
+

@@ -48,6 +48,8 @@ Models comptition
 1- Modify Track app to crm
 2- updtae customUser fields
 3- create new app Candidate
+4- create CandidateProfile
+5- create CandidateApplication
 
 
 
