@@ -15,13 +15,10 @@ class CustomUser(AbstractUser):
     ordering = ('username',)
 
     email = models.EmailField(unique=True)
-    first_name = models.CharField(
-        max_length=255, blank=True, null=True, validators=[_NAME_REGEX])
-    last_name = models.CharField(
-        max_length=255, blank=True, null=True, validators=[_NAME_REGEX])
+    username = models.CharField(unique=True, max_length=50)
+    name = models.CharField(max_length=50)
     phone_number = models.CharField(_('Mobile Number'), null=True, validators=[_PHONE_REGEX], max_length=10)
     is_blocked = models.BooleanField(default=False)
-    is_email_verified = models.BooleanField(default=False)
 
 
     class Meta:
