@@ -51,5 +51,10 @@ Models comptition
 4- create CandidateProfile
 5- create CandidateApplication
 
+----------------------------------------------------------------
+
+19 JAN,
+1- CandidateTrackApplicationResualts
+    - Screening stage resualts will be capture at profile STATUS = Approved/blocked
 
 

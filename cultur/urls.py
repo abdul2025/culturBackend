@@ -48,5 +48,6 @@ urlpatterns = [
     path(f'{api}/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),
 
-    path(f'{api}/crm/', include("crm.urls")),
+    path(f'{api}/crm/tracks/', include("crm.urls")),
+    path(f'{api}/candidate/', include("candidate.urls")),
 ]

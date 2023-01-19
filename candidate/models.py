@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import time
 from core.utility import *
 from datetime import timedelta, datetime
-from crm.models import Tracks
+from crm.models import Tracks, Phase, Pillar, PallarStander
 
 # Create your models here.
 class CandidateProfile(BaseModel):
@@ -28,6 +28,8 @@ class CandidateProfile(BaseModel):
     regdate = models.DateField()
     initiative_know = models.CharField(max_length=255, null=True, blank=True)
 
+
+    #### This is for stage screening only
     status = models.IntegerField(
         choices=(
             (201, 'Approved'),
@@ -35,7 +37,6 @@ class CandidateProfile(BaseModel):
         ),
         default=201
     )
-    score = models.FloatField(null=True, blank=True, default=0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],)
 
     cv = models.FileField(
         upload_to=PathAndRename(
@@ -49,7 +50,6 @@ class CandidateProfile(BaseModel):
         max_length=2048,
         blank=True, null=True
     )
-
 
     previous_work_upload = models.FileField(
         upload_to=PathAndRename(
@@ -197,4 +197,44 @@ class CandidateApplication(BaseModel):
         default=1
     )
     profitable_projects = models.IntegerField(default=0)
+    score = models.FloatField(null=True, blank=True, default=0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],)
 
+
+    #### Candidate Can only have one Applications per track
+    class Meta:
+        unique_together = (("track","profile"),)
+
+    def __str__(self):
+        return self.profile.user.name
+
+
+class CandidateTrackApplication(BaseModel):
+    application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE)
+    phase = models.ForeignKey(Phase, on_delete=models.DO_NOTHING, null=True)
+
+
+    def __str__(self):
+        return self.application.track.name + "-" + self.phase.name
+
+
+class CandidatePhase(BaseModel):
+    application = models.ForeignKey(CandidateTrackApplication, on_delete=models.CASCADE)
+    pillar = models.ForeignKey(Pillar, on_delete=models.DO_NOTHING, null=True)
+    # pillarStanders = models.ManyToManyField(PallarStander, related_name='cand_of_pallarStander', blank=True)
+    score = models.FloatField(null=True, blank=True, default=0)
+
+    @property
+    def calaculateScores(self):
+        print("Calculating scores")
+
+
+    def __str__(self):
+        return self.application.application.profile.user.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
+class CandidatePillar(BaseModel):
+    candidate_phase = models.ForeignKey(CandidatePhase, on_delete=models.CASCADE, related_name='candidate_sub_pillar')
+    questions = models.JSONField(default=list)
