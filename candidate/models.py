@@ -248,7 +248,7 @@ class CandidateSubApplication(BaseModel):
 
     def _calaculate_score(self, *args, **kwargs):
         # queryset = CandidateSubApplication.objects.values('pillar__').annotate(models.Sum('score_per_pillar'))
-        ## Calculate Score by number of pillar and total wight
+        ##TODO: Calculate Score by number of pillar and total wight
 
         total = 0
         for i in self.questions:
