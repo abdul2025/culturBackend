@@ -6,6 +6,8 @@ import time
 from core.utility import *
 from datetime import timedelta, datetime
 from crm.models import Tracks, Phase, Pillar, PallarStander
+from .services import *
+
 
 # Create your models here.
 class CandidateProfile(BaseModel):
@@ -171,7 +173,7 @@ class CandidateProfile(BaseModel):
 
 
 class CandidateApplication(BaseModel):
-    profile = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE, related_name='applications')
     track = models.ForeignKey(Tracks, on_delete=models.CASCADE)
     participation_title = models.CharField(max_length=255)
     participation_file = models.FileField(
@@ -198,43 +200,67 @@ class CandidateApplication(BaseModel):
     )
     profitable_projects = models.IntegerField(default=0)
     score = models.FloatField(null=True, blank=True, default=0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],)
+    application_stage = models.IntegerField(
+        choices=(
+            (0, 'Filteration'),
+            (1, 'Judgement'),
+        ),
+        default=1
+    )
 
 
+    def update_applications_score(self, *args, **kwargs):
+        queryset = CandidateSubApplication.objects.values('reviewer__name').annotate(models.Sum('score_per_pillar'))
+        ## group by reviewers
+        ## total_phase sum score_per_pillar / by number of reviewers
+        ## total_phase / by number of phases
+
+        number_of_reviwers = queryset.count()
+        total = 0
+        for obj in list(queryset):
+            total += obj['score_per_pillar__sum']
+
+        total = total / number_of_reviwers
+        print(total)
+
+
+
+
+    def save(self, *args, **kwargs):
+        self.update_applications_score()
+        super().save(*args, **kwargs)
     #### Candidate Can only have one Applications per track
     class Meta:
         unique_together = (("track","profile"),)
 
     def __str__(self):
-        return self.profile.user.name
+        return self.profile.user.name + '-' + str(self.id) + '- Track' + str(self.track.id)
 
 
-class CandidateTrackApplication(BaseModel):
-    application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE)
-    phase = models.ForeignKey(Phase, on_delete=models.DO_NOTHING, null=True)
+class CandidateSubApplication(BaseModel):
+    application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE, related_name='candidates_tracks')
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, null=True)
+    pillar = models.ForeignKey(Pillar, on_delete=models.CASCADE, null=True)
+    pillar_stander = models.ForeignKey(PallarStander, on_delete=models.CASCADE, null=True)
+    questions = models.JSONField(default=list)
+    score_per_pillar = models.FloatField(null=True, blank=True, default=0)
+    reviewer = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
 
+    def _calaculate_score(self, *args, **kwargs):
+        # queryset = CandidateSubApplication.objects.values('pillar__').annotate(models.Sum('score_per_pillar'))
+        ## Calculate Score by number of pillar and total wight
+
+        total = 0
+        for i in self.questions:
+            total = sum(list(map(int, i.values())))
+        return total
+
+
+
+
+    def save(self, *args, **kwargs):
+        self.score_per_pillar = self._calaculate_score()
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.application.track.name + "-" + self.phase.name
-
-
-class CandidatePhase(BaseModel):
-    application = models.ForeignKey(CandidateTrackApplication, on_delete=models.CASCADE)
-    pillar = models.ForeignKey(Pillar, on_delete=models.DO_NOTHING, null=True)
-    # pillarStanders = models.ManyToManyField(PallarStander, related_name='cand_of_pallarStander', blank=True)
-    score = models.FloatField(null=True, blank=True, default=0)
-
-    @property
-    def calaculateScores(self):
-        print("Calculating scores")
-
-
-    def __str__(self):
-        return self.application.application.profile.user.name
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-
-class CandidatePillar(BaseModel):
-    candidate_phase = models.ForeignKey(CandidatePhase, on_delete=models.CASCADE, related_name='candidate_sub_pillar')
-    questions = models.JSONField(default=list)

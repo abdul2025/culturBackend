@@ -1,3 +1,24 @@
+
+
+Notes:
+
+Demo JAN 31
+
+----- Filter reuglar users per staging
+---- APIs Expose
+--- Upload
+
+
+
+
+----
+reuglar
+---- permission type:
+1- per track
+2- per phase
+3- per room
+
+
 Cultur Project
 
 
