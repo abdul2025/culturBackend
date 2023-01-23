@@ -8,13 +8,13 @@
   "tracks": [
     {
       "id": 1,
-      "candidate_track_phases": [
+      "track_phases": [
         {
           "id": 1,
-          "candidate_phases": [
+          "phases": [
             {
               "id": 1,
-              "candidate_pillars": [
+              "pillars": [
                 {
                   "id": 1,
                   "questions": [
@@ -35,12 +35,10 @@
               "pillar": 1
             }
           ],
-          "candidate_phase_name": "phase 1",
           "application": 1,
           "phase": 1
         }
       ],
-      "candidate_track_name": "Track 1",
       "participation_title": "movie",
       "participation_file": "/uploads/participation_file/2023/01/19/f45160ef-5c01-46d9-ad24-5ab6b7a7a4b8.txt",
       "work_overview": "some movie",
@@ -53,16 +51,14 @@
     },
     {
       "id": 2,
-      "candidate_track_phases": [
+      "track_phases": [
         {
           "id": 2,
-          "candidate_phases": [],
-          "candidate_phase_name": "phase 2",
+          "phases": [],
           "application": 2,
           "phase": 2
         }
       ],
-      "candidate_track_name": "Track 2",
       "participation_title": "music",
       "participation_file": null,
       "work_overview": "fas",

@@ -6,12 +6,12 @@ from crm.serializers import *
 
 excludeFields = ('created_at', 'modified_at', 'hidden')
 class CandidatePillarSubApplicationSerializer(serializers.ModelSerializer):
-    pillar_name = PillarSerializer(read_only=True, many=True)
+    pillar = PillarSerializer(read_only=True)
     pillar_stander = PallarStanderSerializer(read_only=True, many=True)
 
 
-    def get_pillar_name(self, obj):
-        return obj.pillar.name
+    # def get_pillar_name(self, obj):
+    #     return obj.pillar.name
     class Meta:
         model = CandidatePillarSubApplication
         exclude = excludeFields
