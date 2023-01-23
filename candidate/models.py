@@ -4,9 +4,9 @@ from cultur.validators import _ID_NUMBER_REGEX
 from django.core.validators import MaxValueValidator, MinValueValidator
 import time
 from core.utility import *
-from datetime import timedelta, datetime
+from datetime import datetime
 from crm.models import Tracks, Phase, Pillar, PallarStander
-from .services import *
+
 
 
 # Create your models here.
@@ -40,25 +40,13 @@ class CandidateProfile(BaseModel):
         default=201
     )
 
-    cv = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/cv/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
-    picture_id = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/picture_id/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
+    cv = models.URLField(null=True, blank=True)
 
-    previous_work_upload = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/participation_file/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
+    picture_id = models.URLField(null=True, blank=True)
+
+
+    previous_work_upload = models.URLField(null=True, blank=True)
+
     support = models.IntegerField(
         choices=(
             (0, 'Yes'),
@@ -85,26 +73,14 @@ class CandidateProfile(BaseModel):
     inspiration_story = models.TextField(null=True, blank=True)
     additional_files = models.TextField(null=True, blank=True)
 
-    honors_upload = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/honors_upload_file/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
+    honors_upload = models.URLField(null=True, blank=True)
 
-    local_award = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/local_award_file/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
 
-    international_awards = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/nternational_awards_file/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
+    local_award = models.URLField(null=True, blank=True)
+
+
+    international_awards = models.URLField(null=True, blank=True)
+
     tv_host = models.CharField(null=True, blank=True, max_length=255)
     press_interviews = models.CharField(null=True, blank=True, max_length=255)
     training_courses = models.CharField(null=True, blank=True, max_length=255)
@@ -176,12 +152,7 @@ class CandidateApplication(BaseModel):
     profile = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE, related_name='applications')
     track = models.ForeignKey(Tracks, on_delete=models.CASCADE)
     participation_title = models.CharField(max_length=255)
-    participation_file = models.FileField(
-        upload_to=PathAndRename(
-            'uploads/participation_file/{}'.format(time.strftime("%Y/%m/%d"))),
-        max_length=2048,
-        blank=True, null=True
-    )
+    participation_file = models.URLField(null=True)
     work_overview =  models.CharField(max_length=255)
     year_of_execution = models.CharField(max_length=255)
     work_publishing = models.IntegerField(
@@ -202,26 +173,28 @@ class CandidateApplication(BaseModel):
     score = models.FloatField(null=True, blank=True, default=0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],)
     application_stage = models.IntegerField(
         choices=(
-            (0, 'Filteration'),
-            (1, 'Judgement'),
+            (0, 'Scanning'),
+            (1, 'Filteration'),
+            (2, 'Judgement'),
         ),
-        default=1
+        default=0
     )
 
 
     def update_applications_score(self, *args, **kwargs):
-        queryset = CandidateSubApplication.objects.values('reviewer__name').annotate(models.Sum('score_per_pillar'))
+        queryset = CandidateSubApplication.objects.values('reviewer__name').annotate(models.Sum('phase_score'))
         ## group by reviewers
         ## total_phase sum score_per_pillar / by number of reviewers
         ## total_phase / by number of phases
 
-        number_of_reviwers = queryset.count()
-        total = 0
-        for obj in list(queryset):
-            total += obj['score_per_pillar__sum']
+        # number_of_reviwers = queryset.count()
+        # total = 0
+        # for obj in list(queryset):
+        #     print(obj['phase_score__sum'])
+        #     total += obj['phase_score__sum']
 
-        total = total / number_of_reviwers
-        print(total)
+        # total = total / number_of_reviwers
+        # print(total)
 
 
 
@@ -240,27 +213,62 @@ class CandidateApplication(BaseModel):
 class CandidateSubApplication(BaseModel):
     application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE, related_name='candidates_tracks')
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE, null=True)
-    pillar = models.ForeignKey(Pillar, on_delete=models.CASCADE, null=True)
-    pillar_stander = models.ForeignKey(PallarStander, on_delete=models.CASCADE, null=True)
-    questions = models.JSONField(default=list)
-    score_per_pillar = models.FloatField(null=True, blank=True, default=0)
+    phase_score = models.FloatField(default=0)
     reviewer = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
 
-    def _calaculate_score(self, *args, **kwargs):
-        # queryset = CandidateSubApplication.objects.values('pillar__').annotate(models.Sum('score_per_pillar'))
-        ##TODO: Calculate Score by number of pillar and total wight
-
-        total = 0
-        for i in self.questions:
-            total = sum(list(map(int, i.values())))
-        return total
 
 
 
+    """_summary_
 
-    def save(self, *args, **kwargs):
-        self.score_per_pillar = self._calaculate_score()
-        return super().save(*args, **kwargs)
+        Phase Score:
+        -   Retrive all related CandidatePillarSubApplication, by pillar
+        -   sum score_per_pillar / Number of pillar
+    """
 
     def __str__(self):
         return self.application.track.name + "-" + self.phase.name
+
+
+
+class CandidatePillarSubApplication(BaseModel):
+    sub_application = models.ForeignKey(CandidateSubApplication, on_delete=models.CASCADE, related_name='candidates_pillar')
+    pillar = models.ForeignKey(Pillar, on_delete=models.CASCADE, null=True)
+    pillar_stander = models.ManyToManyField(PallarStander)
+    capture_questions_answers = models.JSONField(default=list)
+    score_per_pillar = models.FloatField(default=0)
+
+
+    """_summary_
+
+        score_per_pillar:
+        -   Retrive all
+            * capture_questions_answers Contains :
+        - Respose to FrontEnd all pillar_stander
+
+        , by pillar
+        -   sum score_per_pillar / Number of pillar
+
+    """
+
+    def calcScore(self):
+        queryset = CandidatePillarSubApplication.objects.filter(sub_application=self.sub_application)
+        print(queryset.count())
+
+
+        # total_per_assigned_pillar = 0
+        # for pillars in list(queryset):
+        #     for i in pillars.capture_questions_answers:
+        #         print(i)
+        #         # total_per_assigned_pillar += reduce(lambda x, y:int(x)+int(y), list(i.values())) * 10
+        #         total_per_assigned_pillar += sum(list(map(int, i.values())))
+        # for subapp in list(queryset):
+        #     CandidatePillarSubApplication.objects.filter(id=subapp.id).update(score_per_pillar=total_per_assigned_pillar)
+
+
+    def save(self, *args, **kwargs):
+        self.calcScore()
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.sub_application.phase.name + "- SubPillar"

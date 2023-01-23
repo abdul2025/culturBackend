@@ -25,9 +25,8 @@ class CandidateSubApplicationInline(admin.TabularInline):
     list_display = [
         'application',
         'phase',
-        'pillar',
-        'pillar_stander',
-        'score_per_pillar',
+        'phase_score',
+        'reviewer',
     ]
     list_filter = [
         'created_at',
@@ -38,10 +37,8 @@ class CandidateSubApplicationAdmin(admin.ModelAdmin):
     list_display = [
         'application',
         'phase',
-        'pillar',
-        'pillar_stander',
-        'score_per_pillar',
-
+        'phase_score',
+        'reviewer',
     ]
     list_filter = [
         'created_at',
@@ -61,80 +58,22 @@ class CandidateApplicationAdmin(admin.ModelAdmin):
         'created_at',
     ]
 
-
-
-
-# class CandidateTrackApplicationAdmin(admin.ModelAdmin):
-#     model = CandidateTrackApplication
-#     list_display = [
-#         'application',
-#         'phase',
-
-#     ]
-#     list_filter = [
-#         'created_at',
-#     ]
-
-# class CandidatePillarInline(admin.TabularInline):
-#     model = CandidatePillar
-#     extra = 0
-#     exclude = ['hidden']
-#     list_display = [
-#         'candidate_phase',
-#         'questions',
-#         # 'number_of_judges'
-#     ]
-#     list_filter = [
-#         'created_at',
-#     ]
-
-
-# class CandidatePillarAdmin(admin.ModelAdmin):
-#     model = CandidatePillar
-
-#     list_display = [
-#         'candidate_phase',
-#         'pillar_stander',
-#         # 'number_of_judges'
-#     ]
-
-#     list_filter = [
-#         'created_at',
-#     ]
-
-
-# class CandidatePhaseAdmin(admin.ModelAdmin):
-#     model = CandidatePhase
-#     inlines = [CandidatePillarInline]
-#     list_display = [
-#         'application',
-#         'pillar',
-#         'score',
-#         # 'number_of_judges'
-#     ]
-#     list_filter = [
-#         'created_at',
-#     ]
-
-# class CandidatePillarStanderAdmin(admin.ModelAdmin):
-#     model = CandidatePillarStander
-#     list_display = [
-#         'candidatePillar',
-#         # 'number_of_judges'
-#     ]
-#     list_filter = [
-#         'created_at',
-#     ]
-
+class CandidatePillarSubApplicationAdmin(admin.ModelAdmin):
+    model = CandidatePillarSubApplication
+    list_display = [
+        # 'sub_application'
+        'pillar',
+        'score_per_pillar',
+    ]
+    list_filter = [
+        'created_at',
+    ]
 
 
 
 admin.site.register(CandidateProfile, CandidateProfileAdmin)
 admin.site.register(CandidateApplication, CandidateApplicationAdmin)
 admin.site.register(CandidateSubApplication, CandidateSubApplicationAdmin)
+admin.site.register(CandidatePillarSubApplication, CandidatePillarSubApplicationAdmin)
 
-# admin.site.register(CandidateTrackApplication, CandidateTrackApplicationAdmin)
-# admin.site.register(CandidatePhase, CandidatePhaseAdmin)
-# admin.site.register(CandidatePillar, CandidatePillarAdmin)
-# admin.site.register(CandidatePillarStander, CandidatePillarStanderAdmin)
 

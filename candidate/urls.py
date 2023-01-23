@@ -13,8 +13,8 @@ from rest_framework.routers import DefaultRouter
 
 urlpatterns = [
     path('', ListProfilesView.as_view(), name='profiles'),
-    path('<int:pk>', RetriveProfilesView.as_view(), name='profile'),
-
+    path('<int:pk>/', RetriveProfilesView.as_view(), name='profile'),
+    path('application/<int:pk>', CandidateApplicationView.as_view(), name='application'),
 
     # path('<int:pk>/phase/', ListPhasesView.as_view(), name='phase'),
 

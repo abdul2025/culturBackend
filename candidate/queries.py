@@ -17,6 +17,14 @@ def get_profile(id:int) -> CandidateProfile:
     except CandidateProfile.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateProfile._meta.model_name])
 
+
+def get_applications(id:int) -> CandidateApplication:
+    try:
+        return CandidateApplication.objects.get(id=id)
+    except CandidateApplication.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateApplication._meta.model_name])
+
+
 # def get_phase_by_track(id:int) -> Iterable[Phase]:
 #     try:
 #         return Phase.objects.filter(tracks=id)

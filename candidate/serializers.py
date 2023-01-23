@@ -1,23 +1,30 @@
 from rest_framework import serializers
 from .models import *
 from accounts.serializers import CustomUserSerializer
+from crm.serializers import *
 
 
 excludeFields = ('created_at', 'modified_at', 'hidden')
+class CandidatePillarSubApplicationSerializer(serializers.ModelSerializer):
+    pillar_name = PillarSerializer(read_only=True, many=True)
+    pillar_stander = PallarStanderSerializer(read_only=True, many=True)
 
+
+    def get_pillar_name(self, obj):
+        return obj.pillar.name
+    class Meta:
+        model = CandidatePillarSubApplication
+        exclude = excludeFields
 class CandidateSubApplicationSerializer(serializers.ModelSerializer):
     phase_name = serializers.SerializerMethodField()
-    pillar_name = serializers.SerializerMethodField()
-    pillar_stander_name = serializers.SerializerMethodField()
+    phase_pillars = serializers.SerializerMethodField()
+
 
     def get_phase_name(self, obj):
         return obj.phase.name
 
-    def get_pillar_name(self, obj):
-        return obj.pillar.name
-
-    def get_pillar_stander_name(self, obj):
-        return obj.pillar_stander.name
+    def get_phase_pillars(self, obj):
+        return CandidatePillarSubApplicationSerializer(obj.candidates_pillar, many=True).data
     class Meta:
         model = CandidateSubApplication
         exclude = excludeFields
@@ -37,6 +44,12 @@ class CandidateApplicationSerializer(serializers.ModelSerializer):
 
 
 
+class CandidateAppSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CandidateApplication
+        exclude = excludeFields
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer()
     applications = serializers.SerializerMethodField()
@@ -46,6 +59,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateProfile
         exclude = excludeFields
+
+
 
 
 # class PhaseSerializer(serializers.ModelSerializer):
