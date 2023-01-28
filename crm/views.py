@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 class ListTracksView(generics.ListAPIView):
     queryset = Tracks.objects.all()
-    serializer_class = TracksSerializer
+    serializer_class = TracksCustomSerializer
     # permission_classes = [IsAdminUser]
 
 

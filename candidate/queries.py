@@ -18,11 +18,26 @@ def get_profile(id:int) -> CandidateProfile:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateProfile._meta.model_name])
 
 
-def get_applications(id:int) -> CandidateApplication:
+def get_applications(truckid:int) -> CandidateApplication:
+    try:
+        return CandidateApplication.objects.filter(track=truckid)
+    except CandidateApplication.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateApplication._meta.model_name])
+
+
+def get_application(id:int) -> CandidateApplication:
     try:
         return CandidateApplication.objects.get(id=id)
     except CandidateApplication.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateApplication._meta.model_name])
+
+def get_candidate_screening_by_app(app:CandidateApplication) -> CandidateScreening:
+    try:
+        return CandidateScreening.objects.get(application=app)
+    except CandidateScreening.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateScreening._meta.model_name])
+
+
 
 
 # def get_phase_by_track(id:int) -> Iterable[Phase]:

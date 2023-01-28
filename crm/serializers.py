@@ -5,12 +5,35 @@ from .models import *
 excludeFields = ('created_at', 'modified_at', 'hidden')
 
 class TracksSerializer(serializers.ModelSerializer):
+    phases = serializers.SerializerMethodField()
+    screening = serializers.SerializerMethodField()
+
+
+    def get_phases(self, obj):
+        return PhaseSerializer(obj.tracks, many=True).data
+
+    def get_screening(self, obj):
+        return ScreeningSerializer(obj.tracks_screening, many=True).data
 
     class Meta:
         model = Tracks
         exclude = excludeFields
 
+
+class TracksCustomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tracks
+        exclude = excludeFields
+
+
+
 class PhaseSerializer(serializers.ModelSerializer):
+    pillars = serializers.SerializerMethodField()
+
+
+
+    def get_pillars(self, obj):
+        return PillarSerializer(obj.phases, many=True).data
 
     class Meta:
         model = Phase
@@ -23,21 +46,18 @@ class PallarStanderSerializer(serializers.ModelSerializer):
         exclude = excludeFields
 
 class PillarSerializer(serializers.ModelSerializer):
-    pallarStander = PallarStanderSerializer(many=True)
-    phase = PhaseSerializer()
+    pillar_standers = serializers.SerializerMethodField()
+
+
+    def get_pillar_standers(self, obj):
+        return PallarStanderSerializer(obj.pallarStander, many=True).data
 
     class Meta:
         model = Pillar
-        exclude = excludeFields
-
-
-
-
-
-
+        exclude = ('created_at', 'modified_at', 'hidden', 'pallarStander')
 
 class ScreeningSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Screening
-        exclude = excludeFields
+        fields = ('questions',)

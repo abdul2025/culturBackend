@@ -128,28 +128,10 @@ class CandidateProfile(BaseModel):
         year = datetime.now().year - self.date_of_birth.year
         return year
 
-    # def does_contain_timeslot_with_munjiz(self, time_slot):
-    #     status_query = Q(status=406) | Q(status=412)
-    #     sessions = Session.objects.filter(
-    #         Q(munjiz_id=self.id) & status_query & Q(time_slot=time_slot))
-
-    #     if not sessions.exists():
-    #         return False
-    #     else:
-    #         return True
-
-
-    # def save(self, *args, **kwargs):
-    #     self.score = (self.english_level_score + self.discipline + self.appearance + self.manner + self.experience) / 5
-    #     return super().save(*args, **kwargs)
-
-    # class Meta:
-    #     verbose_name = 'Munjiz profile'
-    #     verbose_name_plural = 'Munjiz profiles'
 
 
 class CandidateApplication(BaseModel):
-    profile = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE, related_name='applications')
+    profile = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE, related_name='profile')
     track = models.ForeignKey(Tracks, on_delete=models.CASCADE)
     participation_title = models.CharField(max_length=255)
     participation_file = models.URLField(null=True)
@@ -179,6 +161,7 @@ class CandidateApplication(BaseModel):
         ),
         default=0
     )
+
 
 
     def update_applications_score(self, *args, **kwargs):
@@ -211,8 +194,8 @@ class CandidateApplication(BaseModel):
 
 
 class CandidateSubApplication(BaseModel):
-    application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE, related_name='candidates_tracks')
-    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, null=True)
+    application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE, related_name='candidates_application')
+    phase_name = models.CharField(max_length =255, blank=True, null=True)
     phase_score = models.FloatField(default=0)
     reviewer = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
 
@@ -227,15 +210,13 @@ class CandidateSubApplication(BaseModel):
     """
 
     def __str__(self):
-        return self.application.track.name + "-" + self.phase.name
-
+        return self.application.track.name + "-" + self.phase_name
 
 
 class CandidatePillarSubApplication(BaseModel):
-    sub_application = models.ForeignKey(CandidateSubApplication, on_delete=models.CASCADE, related_name='candidates_pillar')
-    pillar = models.ForeignKey(Pillar, on_delete=models.CASCADE, null=True)
-    pillar_stander = models.ManyToManyField(PallarStander)
-    capture_questions_answers = models.JSONField(default=list)
+    sub_application = models.ForeignKey(CandidateSubApplication, on_delete=models.CASCADE, related_name='candidates_sub_application')
+    pillar_name = models.CharField(max_length =255, blank=True, null=True)
+    weight = models.IntegerField(null=True, blank=True)
     score_per_pillar = models.FloatField(default=0)
 
 
@@ -271,4 +252,41 @@ class CandidatePillarSubApplication(BaseModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.sub_application.phase.name + "- SubPillar"
+        return self.sub_application.phase_name + "- SubPillar" +"-"+ self.pillar_name
+
+
+
+class CandidateStanders(BaseModel):
+    candidate_pillar = models.ForeignKey(CandidatePillarSubApplication, on_delete=models.CASCADE, related_name='candidates_pillar')
+    stander_name = models.CharField(max_length =255, blank=True, null=True)
+    stander_questions = models.JSONField()
+
+
+
+
+
+class CandidateScreening(BaseModel):
+    application = models.ForeignKey(CandidateApplication, on_delete=models.CASCADE, related_name='candidates_screening')
+    screening = models.JSONField()
+    reviewer = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
+
+
+    # def updateApplicationStageToFiltering(self):
+    #     """Validate all values are the same and equal to 1"""
+    #     if 1 in self.screening.values():
+    #         self.application.application_stage = 1
+    #         self.application.save()
+
+    def save(self, *args, **kwargs):
+        # self.updateApplicationStageToFiltering()
+        return super().save(*args, **kwargs)
+
+    """_summary_
+
+        Phase Score:
+        -   Retrive all related CandidatePillarSubApplication, by pillar
+        -   sum score_per_pillar / Number of pillar
+    """
+
+    def __str__(self):
+        return self.application.track.name
