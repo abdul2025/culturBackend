@@ -92,15 +92,19 @@ WSGI_APPLICATION = 'cultur.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+# DB_HOST=nca-1.cu8rhgwgwhzv.eu-west-1.rds.amazonaws.com
+# DB_NAME=nca_db
+# DB_USERNAME=nca_db_user
+# DB_PASSWORD='Dghsk$3s*4'
+# DB_PORT=5432
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': env('DB_HOST'),
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USERNAME'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'PORT': env('DB_PORT'),  # Set to empty string for default.
+        'HOST': 'nca-1.cu8rhgwgwhzv.eu-west-1.rds.amazonaws.com',
+        'NAME': 'nca_db',
+        'USER':'nca_db_user',
+        'PASSWORD': 'Dghsk$3s*4',
+        'PORT': '5432',  # Set to empty string for default.
     }
 }
 
