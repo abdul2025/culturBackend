@@ -33,9 +33,16 @@ def get_application(id:int) -> CandidateApplication:
 
 def get_candidate_screening_by_app(app:CandidateApplication) -> CandidateScreening:
     try:
-        return CandidateScreening.objects.get(application=app)
+        return CandidateScreening.objects.filter(application=app)
     except CandidateScreening.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateScreening._meta.model_name])
+
+
+def get_candidate_stander(id:int) -> CandidateStanders:
+    try:
+        return CandidateStanders.objects.get(id=id)
+    except CandidateStanders.DoesNotExist:
+        raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateStanders._meta.model_name])
 
 
 

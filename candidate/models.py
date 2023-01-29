@@ -232,23 +232,7 @@ class CandidatePillarSubApplication(BaseModel):
 
     """
 
-    def calcScore(self):
-        queryset = CandidatePillarSubApplication.objects.filter(sub_application=self.sub_application)
-        print(queryset.count())
-
-
-        # total_per_assigned_pillar = 0
-        # for pillars in list(queryset):
-        #     for i in pillars.capture_questions_answers:
-        #         print(i)
-        #         # total_per_assigned_pillar += reduce(lambda x, y:int(x)+int(y), list(i.values())) * 10
-        #         total_per_assigned_pillar += sum(list(map(int, i.values())))
-        # for subapp in list(queryset):
-        #     CandidatePillarSubApplication.objects.filter(id=subapp.id).update(score_per_pillar=total_per_assigned_pillar)
-
-
     def save(self, *args, **kwargs):
-        self.calcScore()
         return super().save(*args, **kwargs)
 
     def __str__(self):

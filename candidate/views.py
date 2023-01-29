@@ -53,6 +53,8 @@ class NewCndidateApplicationView(APIView):
         stage = data.get('application_stage')
         appId = data.get('id')
         track = data.get('track')
+        applications = get_application(id=appId)
+
         if stage == 0:
             data = {'application':appId,
                     'screening':track['screening'],
@@ -64,9 +66,7 @@ class NewCndidateApplicationView(APIView):
 
         elif stage == 1:
             print("Filtering")
-            applications = get_application(id=appId)
-
-            sub_app = NewSubApplicationServices.CreateSubApplications(
+            sub_app = SubApplicationServices.CreateSubApplications(
                 application=applications,
                 ### 0 index of first phase as filtering
                 phase=track['phases'][0]['name'],
@@ -79,8 +79,7 @@ class NewCndidateApplicationView(APIView):
 
         else:
             print("judeging")
-            applications = get_application(id=appId)
-            sub_app = NewSubApplicationServices.CreateSubApplications(
+            sub_app = SubApplicationServices.CreateSubApplications(
                 application=applications,
                 ### 0 index of first phase as filtering
                 phase=track['phases'][1]['name'],
@@ -97,7 +96,14 @@ class NewCndidateApplicationView(APIView):
 
 
     def patch(self, request):
-        pass
+        data = JSONParser().parse(request)
+        if data is not None:
+            questions = data.get('questions')
+            app = SubApplicationServices.updateSubApplicationsQuestions(
+                questions=questions,
+            )
+            serializer = CandidateCaptureAppSerializer(app)
+            return Response(serializer.data)
 
 class ScreeningCndidateApplicationView(viewsets.ViewSet):
     # permission_classes = [IsAdminUser]
@@ -105,7 +111,7 @@ class ScreeningCndidateApplicationView(viewsets.ViewSet):
     def retrieve(self, request, pk):
         applications = get_application(id=pk)
         screening = get_candidate_screening_by_app(app=applications)
-        serializer = CandidateScreeningSerializer(screening)
+        serializer = CandidateScreeningSerializer(screening, many=True)
         return Response(serializer.data)
 
 
