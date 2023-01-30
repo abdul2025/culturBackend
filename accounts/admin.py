@@ -6,46 +6,23 @@ from core.utility import linkify
 from .models import *
 
 class CustomUserAdmin(UserAdmin):
-    list_display = (
-        'email', 'phone_number', 'name', 'is_staff',
-        'is_blocked'
-        )
-
     fieldsets = (
-        (None, {
-            'fields': ('email', 'password')
-        }),
-        ('Personal info', {
-            'fields': ('name', 'phone_number')
-        }),
-        ('Permissions', {
-            'fields': (
-                'is_active', 'is_staff', 'is_superuser',
-                'groups', 'user_permissions', 'is_blocked',
-                )
-        }),
-        ('Important dates', {
-            'fields': ('last_login', 'date_joined')
-        })
+        (None, {'fields': ('password', 'username')}),
+        (('Personal info'), {
+         'fields': ('name', )}),
+        (('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_blocked',
+                                      'groups', 'user_permissions')}),
+        (('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
-
     add_fieldsets = (
         (None, {
-            'fields': ('email', 'password1', 'password2')
-        }),
-        ('Personal info', {
-            'fields': ('name',)
-        }),
-        ('Permissions', {
-            'fields': (
-                'is_active', 'is_staff', 'is_superuser',
-                'groups', 'user_permissions', 'is_blocked'
-                )
-        }),
-        ('Important dates', {
-            'fields': ('last_login', 'date_joined')
+            'classes': ('wide', ),
+            'fields': ('username', 'password1', 'password2'),
         }),
     )
+    list_display = ['username', 'name', 'is_staff']
+    search_fields = ('username', 'name')
+    ordering = ('email', )
 
 
 
