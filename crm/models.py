@@ -58,7 +58,7 @@ class Pillar(BaseModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name + str(self.id) + f"weights: {self.weight}"
+        return self.name + self.phase + f"weights: {self.weight}"
 
 class Screening(BaseModel):
     name = models.CharField(max_length=255)

@@ -50,6 +50,7 @@ class PallarStanderAdmin(admin.ModelAdmin):
     model = PallarStander
     list_display = [
         'name',
+        linkify(field_name='pillar'),
         'created_at',
     ]
     list_filter = [

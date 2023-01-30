@@ -12,7 +12,7 @@ class RugularTokenObtainPairView(TokenObtainPairView):
         serializer = RugularTokenObtainPairSerializer(
             data=request.data)
         serializer.is_valid(raise_exception=True)
-        AccountService.login(request.data.get('username'))
+        AccountService.login(request.data.get('email'))
         return Response(serializer.validated_data)
 
 
@@ -22,7 +22,7 @@ class CandidateTokenObtainPairView(TokenObtainPairView):
         serializer = CandidateTokenObtainPairSerializer(
             data=request.data)
         serializer.is_valid(raise_exception=True)
-        AccountService.login(request.data.get('username'))
+        AccountService.login(request.data.get('email'))
         return Response(serializer.validated_data)
 
 

@@ -36,5 +36,5 @@ class AccountService:
             raise APIError(Error.NO_ACTIVE_ACCOUNT)
 
     @staticmethod
-    def login(username: str) -> None:
-        LoginLog.objects.create(username=username)
+    def login(email: str) -> None:
+        LoginLog.objects.create(email=email)

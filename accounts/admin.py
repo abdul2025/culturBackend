@@ -7,16 +7,16 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     list_display = (
-        'username', 'email', 'phone_number', 'name', 'is_staff',
+        'email', 'phone_number', 'name', 'is_staff',
         'is_blocked'
         )
 
     fieldsets = (
         (None, {
-            'fields': ('username', 'password')
+            'fields': ('email', 'password')
         }),
         ('Personal info', {
-            'fields': ('name', 'email', 'phone_number')
+            'fields': ('name', 'phone_number')
         }),
         ('Permissions', {
             'fields': (
@@ -31,10 +31,10 @@ class CustomUserAdmin(UserAdmin):
 
     add_fieldsets = (
         (None, {
-            'fields': ('username', 'password1', 'password2')
+            'fields': ('email', 'password1', 'password2')
         }),
         ('Personal info', {
-            'fields': ('name', 'email')
+            'fields': ('name',)
         }),
         ('Permissions', {
             'fields': (
