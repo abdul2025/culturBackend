@@ -21,9 +21,7 @@ class Phase(BaseModel):
 class PallarStander(BaseModel):
     name = models.CharField(max_length=255)
     pillarStanderQuestions = models.JSONField()
-
-
-
+    pillar = models.ForeignKey(Phase, related_name='pillar', on_delete=models.CASCADE)
 
 
 
@@ -35,7 +33,6 @@ class Pillar(BaseModel):
     name = models.CharField(max_length=255)
     weight = models.IntegerField(default=0)
     phase = models.ForeignKey(Phase, related_name='phases', on_delete=models.CASCADE)
-    pallarStander = models.ManyToManyField(PallarStander, related_name='list_of_pallarStander', blank=True)
 
 
 

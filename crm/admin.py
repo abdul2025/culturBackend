@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import *
+from core.utility import linkify
 
 # Register your models here.
 
@@ -60,6 +61,7 @@ class ScreeningAdmin(admin.ModelAdmin):
     model = Screening
     list_display = [
         'name',
+        linkify(field_name='tracks'),
         'created_at',
     ]
     list_filter = [
