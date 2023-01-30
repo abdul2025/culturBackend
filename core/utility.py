@@ -3,6 +3,8 @@ import uuid
 from django.utils.deconstruct import deconstructible
 from django.urls import reverse
 from django.utils.html import format_html
+from django.db import models
+
 
 @deconstructible
 class PathAndRename(object):
@@ -38,3 +40,12 @@ def linkify(field_name):
 
     _linkify.short_description = field_name  # Sets column name
     return _linkify
+
+
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    modified_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    hidden = models.BooleanField(default=False, null=True, blank=True)
+
+    class Meta:
+        abstract = True

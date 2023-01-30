@@ -16,13 +16,4 @@ class RugularTokenObtainPairView(TokenObtainPairView):
         return Response(serializer.validated_data)
 
 
-class CandidateTokenObtainPairView(TokenObtainPairView):
-
-    def post(self, request):
-        serializer = CandidateTokenObtainPairSerializer(
-            data=request.data)
-        serializer.is_valid(raise_exception=True)
-        AccountService.login(request.data.get('email'))
-        return Response(serializer.validated_data)
-
 

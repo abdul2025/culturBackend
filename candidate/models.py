@@ -1,12 +1,12 @@
 from django.db import models
-from accounts.models import BaseModel, CustomUser
+from accounts.models import CustomUser
 from cultur.validators import _ID_NUMBER_REGEX
 from django.core.validators import MaxValueValidator, MinValueValidator
 import time
 from core.utility import *
 from datetime import datetime
 from crm.models import Tracks, Phase, Pillar, PallarStander
-
+from core.utility import BaseModel
 
 
 # Create your models here.

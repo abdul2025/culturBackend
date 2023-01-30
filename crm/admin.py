@@ -38,7 +38,6 @@ class PillarAdmin(admin.ModelAdmin):
         'phase',
         'weight',
         'created_at',
-
     ]
     list_filter = [
         'name',

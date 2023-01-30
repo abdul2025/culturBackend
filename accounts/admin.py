@@ -2,8 +2,8 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
-from .models import CustomUser
+from core.utility import linkify
+from .models import *
 
 class CustomUserAdmin(UserAdmin):
     list_display = (
@@ -47,4 +47,31 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
+
+
+
+class JudgersAdmin(admin.ModelAdmin):
+    model = Judgers
+    list_display = [
+        'user',
+        linkify(field_name='tracks'),
+    ]
+class FilteringAdmin(admin.ModelAdmin):
+    model = Filtering
+    list_display = [
+        'user',
+        linkify(field_name='tracks'),
+    ]
+
+class SorterAdmin(admin.ModelAdmin):
+    model = Sorter
+    list_display = [
+        'user',
+        linkify(field_name='tracks'),
+    ]
+
+
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Judgers, JudgersAdmin)
+admin.site.register(Filtering, FilteringAdmin)
+admin.site.register(Sorter, SorterAdmin)

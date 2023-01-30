@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import BaseModel
+from core.utility import BaseModel
 # Create your models here.
 
 
@@ -69,5 +69,9 @@ class Screening(BaseModel):
 
     def __str__(self):
         return self.name + str(self.id)
+
+
+
+
 
 

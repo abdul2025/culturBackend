@@ -39,11 +39,7 @@ urlpatterns = [
 
     path(f'{api}/rugular/token/', RugularTokenObtainPairView.as_view(),
          name='rugular_token_obtain_pair'),
-    path(f'{api}/candidate/token/', CandidateTokenObtainPairView.as_view(),
-         name='candidate_token_obtain_pair'),
 
-    #     path(f'{api}/supervisors/token/', JLSupervisorTokenObtainPairView.as_view(),
-    #          name='jl_supervisor_token_obtain_pair'),
 
     path(f'{api}/token/refresh/',
          TokenRefreshView.as_view(), name='token_refresh'),

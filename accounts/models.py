@@ -4,12 +4,17 @@ from django.utils.translation import gettext_lazy as _
 from cultur.validators import _PHONE_REGEX, _NAME_REGEX
 from enum import Enum
 from django.contrib.auth.base_user import BaseUserManager
+from crm.models import Tracks
+from core.utility import BaseModel
 
 
 class GroupEnum(Enum):
     ADMIN_GROUP = 'Admin'
-    REGULAR_GROUP = 'Rugular'
-    CANDIDATE_GROUP = 'Candidate'
+    JUDGEMENT_GROUP = 'Judgement'
+    SORT_GROUP = 'Sort'
+    FILTERING_GROUP = 'Filtering'
+    REGULAR_GROUP = 'Regular'
+
 
 
 
@@ -66,14 +71,32 @@ class CustomUser(AbstractUser):
         return super().save(*args, **kwargs)
 
 
+class Judgers(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="judgers")
+    tracks = models.ManyToManyField(Tracks)
 
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    modified_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-    hidden = models.BooleanField(default=False, null=True, blank=True)
+    def __str__(self):
+        return self.user.email
 
-    class Meta:
-        abstract = True
+
+class Filtering(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="filtering")
+    tracks = models.ManyToManyField(Tracks)
+
+    def __str__(self):
+        return self.user.email
+
+class Sorter(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="sorters")
+    tracks = models.ManyToManyField(Tracks)
+
+    def __str__(self):
+        return self.user.email
+
+
+
+
+
 
 class LoginLog(BaseModel):
     email = models.EmailField(null=True)

@@ -1,6 +1,7 @@
 from .models import *
 from typing import Iterable
 from core.errors import Error, APIError
+from accounts.models import CustomUser
 
 
 def get_tracks() -> Iterable[Tracks]:
@@ -10,6 +11,14 @@ def get_tracks() -> Iterable[Tracks]:
     except Tracks.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Tracks._meta.model_name])
 
+
+
+# def get_tracks_by_user() -> Iterable[Tracks]:
+#     try:
+#         tracks = CustomUser.objects.filter
+#         return tracks
+#     except Tracks.DoesNotExist:
+#         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Tracks._meta.model_name])
 
 def get_track(id:int) -> Tracks:
     try:
