@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
         ordering = ('username', 'password')
 
     def __str__(self):
-        return self.email
+        return str(self.username)
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
