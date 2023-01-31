@@ -50,11 +50,11 @@ class PillarSerializer(serializers.ModelSerializer):
 
 
     def get_pillar_standers(self, obj):
-        return PallarStanderSerializer(obj.pallarStander, many=True).data
+        return PallarStanderSerializer(obj.pillar, many=True).data
 
     class Meta:
         model = Pillar
-        exclude = ('created_at', 'modified_at', 'hidden', 'pallarStander')
+        exclude = ('created_at', 'modified_at', 'hidden')
 
 class ScreeningSerializer(serializers.ModelSerializer):
 

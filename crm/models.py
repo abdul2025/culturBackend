@@ -18,17 +18,6 @@ class Phase(BaseModel):
         return self.name + '-' + str(self.tracks.name)
 
 
-class PallarStander(BaseModel):
-    name = models.CharField(max_length=255)
-    pillarStanderQuestions = models.JSONField()
-    pillar = models.ForeignKey(Phase, related_name='pillar', on_delete=models.CASCADE)
-
-
-
-    def __str__(self):
-        return self.name + str(self.id)
-
-
 class Pillar(BaseModel):
     name = models.CharField(max_length=255)
     weight = models.IntegerField(default=0)
@@ -58,7 +47,20 @@ class Pillar(BaseModel):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name + self.phase + f"weights: {self.weight}"
+        return self.name +  f"weights: {self.weight}"
+
+class PallarStander(BaseModel):
+    name = models.CharField(max_length=255)
+    pillarStanderQuestions = models.JSONField()
+    pillar = models.ForeignKey(Pillar, related_name='pillar', on_delete=models.CASCADE)
+
+
+
+    def __str__(self):
+        return self.name + str(self.id)
+
+
+
 
 class Screening(BaseModel):
     name = models.CharField(max_length=255)

@@ -13,12 +13,28 @@ class CandidateCustomApplicationSerializer(serializers.ModelSerializer):
         exclude = excludeFields
 
 
+def _fetchstatusStr(status):
+    switcher = {
+        0: 'Sort',
+        1: 'Filtering',
+        2: 'Judgement'
+    }
+    return switcher.get(status, status)
 
 class CandidateAppSerializer(serializers.ModelSerializer):
     candidate_name = serializers.SerializerMethodField()
+    rated = serializers.SerializerMethodField()
 
     def get_candidate_name(self, obj):
         return obj.profile.user.name
+
+    def get_rated(self, obj):
+        ## check if user already rated this application by application status
+        stage = _fetchstatusStr(obj.application_stage)
+        request = self.context.get('request', None)
+        if request:
+            return request.user.groups.filter(name=stage).exists()
+
     class Meta:
         model = CandidateApplication
         exclude = excludeFields

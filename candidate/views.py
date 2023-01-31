@@ -27,10 +27,12 @@ class RetriveProfilesView(APIView):
         return Response(serializer.data)
 
 class ListCandidateApplicationsView(APIView):
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, truckid):
         applications = get_applications(truckid=truckid)
-        serializer = CandidateAppSerializer(applications, many=True)
+
+        serializer = CandidateAppSerializer(applications, context={'request': request}, many=True)
 
         return Response(serializer.data)
 
@@ -48,6 +50,15 @@ class RetriveCandidateApplicationView(APIView):
 class NewCndidateApplicationView(APIView):
     # permission_classes = [IsAdminUser]
 
+
+
+
+    def get(self, request):
+        appid = request.query_params.get('pk')
+        applications = get_application(id=appid)
+        serializer = CandidateCaptureAppSerializer(applications)
+        return Response(serializer.data)
+
     def post(self, request):
         data = JSONParser().parse(request)
         stage = data.get('application_stage')
@@ -57,7 +68,7 @@ class NewCndidateApplicationView(APIView):
 
         if stage == 0:
             data = {'application':appId,
-                    'screening':track['screening'],
+                    'screening':track['screening'][0]['questions'],
                     'reviewer':request.user.id}
             serializer = CandidateScreeningSerializer(data=data)
             serializer.is_valid(raise_exception=True)
@@ -115,10 +126,10 @@ class ScreeningCndidateApplicationView(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-    def list(self, request):
-        screenings = CandidateScreening.objects.all()
-        serializer = CandidateScreeningSerializer(screenings, many=True)
-        return Response(serializer.data)
+    # def list(self, request):
+    #     screenings = CandidateScreening.objects.all()
+    #     serializer = CandidateScreeningSerializer(screenings, many=True)
+    #     return Response(serializer.data)
 
 
     def create(self, request):

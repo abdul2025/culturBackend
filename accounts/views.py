@@ -9,10 +9,11 @@ from .services import AccountService
 class RugularTokenObtainPairView(TokenObtainPairView):
 
     def post(self, request):
+        print(request.data)
         serializer = RugularTokenObtainPairSerializer(
             data=request.data)
         serializer.is_valid(raise_exception=True)
-        AccountService.login(request.data.get('email'))
+        AccountService.login(request.data.get('username'))
         return Response(serializer.validated_data)
 
 

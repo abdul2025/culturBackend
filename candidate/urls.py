@@ -10,8 +10,8 @@ router.register('screeing', views.ScreeningCndidateApplicationView,
                 basename='screeing')
 
 urlpatterns = [
-    path('', ListProfilesView.as_view(), name='profiles'),
-    path('<int:pk>/', RetriveProfilesView.as_view(), name='profile'),
+    # path('', ListProfilesView.as_view(), name='profiles'),
+    # path('<int:pk>/', RetriveProfilesView.as_view(), name='profile'),
     path('<int:truckid>/application/', ListCandidateApplicationsView.as_view(), name='applications'),
     path('application/<int:pk>', RetriveCandidateApplicationView.as_view(), name='application'),
     path('app/', NewCndidateApplicationView.as_view(), name='new_application'),
