@@ -31,20 +31,20 @@ class JudgersAdmin(admin.ModelAdmin):
     model = Judgers
     list_display = [
         'user',
-        linkify(field_name='tracks'),
+        # linkify(field_name='tracks'),
     ]
 class FilteringAdmin(admin.ModelAdmin):
     model = Filtering
     list_display = [
         'user',
-        linkify(field_name='tracks'),
+        # linkify(field_name='tracks'),
     ]
 
 class SorterAdmin(admin.ModelAdmin):
     model = Sorter
     list_display = [
         'user',
-        linkify(field_name='tracks'),
+        # linkify(field_name='tracks'),
     ]
 
 
