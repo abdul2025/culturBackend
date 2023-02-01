@@ -30,7 +30,7 @@ class ListCandidateApplicationsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, truckid):
-        applications = get_applications(truckid=truckid)
+        applications = get_applications(truckid=truckid, request=request)
 
         serializer = CandidateAppSerializer(applications, context={'request': request}, many=True)
 

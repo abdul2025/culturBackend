@@ -34,10 +34,10 @@ class CandidateProfile(BaseModel):
     #### This is for stage screening only
     status = models.IntegerField(
         choices=(
-            (201, 'Approved'),
-            (403, 'Blocked'),
+            (1, 'Approved'),
+            (0, 'Blocked'),
         ),
-        default=201
+        default=0
     )
 
     cv = models.URLField(null=True, blank=True)
@@ -255,18 +255,17 @@ class CandidateScreening(BaseModel):
     reviewer = models.ForeignKey(CustomUser, on_delete=models.DO_NOTHING, null=True)
 
 
-    # def updateApplicationStageToFiltering(self):
-    # TODO: Shell update the profile to be approved
-    """
+    def updateApplicationStageToFiltering(self):
 
-    """
-    #     """Validate all values are the same and equal to 1"""
-    #     if 1 in self.screening.values():
-    #         self.application.application_stage = 1
-    #         self.application.save()
+        """Validate all values are the same and equal to 1"""
+        if all(value == 1 for value in self.screening.values()):
+            self.application.application_stage = 1
+            self.application.profile.status = 1
+            self.application.save()
+            self.application.profile.save()
 
     def save(self, *args, **kwargs):
-        # self.updateApplicationStageToFiltering()
+        self.updateApplicationStageToFiltering()
         return super().save(*args, **kwargs)
 
     """_summary_

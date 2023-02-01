@@ -13,7 +13,6 @@ class GroupEnum(Enum):
     JUDGEMENT_GROUP = 'Judgement'
     SORT_GROUP = 'Sort'
     FILTERING_GROUP = 'Filtering'
-    REGULAR_GROUP = 'Regular'
 
 
 

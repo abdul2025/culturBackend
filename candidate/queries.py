@@ -1,6 +1,7 @@
 from .models import *
 from typing import Iterable
 from core.errors import Error, APIError
+from accounts.models import GroupEnum
 
 
 # def get_tracks() -> Iterable[Tracks]:
@@ -10,6 +11,14 @@ from core.errors import Error, APIError
 #     except Tracks.DoesNotExist:
 #         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[Tracks._meta.model_name])
 
+def _fetchstatusStr(status):
+    switcher = {
+        GroupEnum.SORT_GROUP.value: 0,
+        GroupEnum.FILTERING_GROUP.value: 1,
+        GroupEnum.JUDGEMENT_GROUP.value: 2
+    }
+    return switcher.get(status, status)
+
 
 def get_profile(id:int) -> CandidateProfile:
     try:
@@ -18,9 +27,11 @@ def get_profile(id:int) -> CandidateProfile:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateProfile._meta.model_name])
 
 
-def get_applications(truckid:int) -> CandidateApplication:
+def get_applications(truckid:int, request) -> CandidateApplication:
     try:
-        return CandidateApplication.objects.filter(track=truckid)
+        groups = request.user.groups.values_list('name',flat = True)
+        groups = [_fetchstatusStr(i) for i in list(groups)]
+        return CandidateApplication.objects.filter(track=truckid, application_stage__in=groups)
     except CandidateApplication.DoesNotExist:
         raise APIError(Error.INSTANCE_NOT_FOUND, extra=[CandidateApplication._meta.model_name])
 
