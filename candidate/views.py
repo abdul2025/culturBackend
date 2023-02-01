@@ -41,7 +41,7 @@ class RetriveCandidateApplicationView(APIView):
     # permission_classes = [IsAdminUser]
     def get(self, request, pk):
         applications = get_application(id=pk)
-        serializer = CandidateCustomApplicationSerializer(applications)
+        serializer = CandidateCustomApplicationSerializer(applications, context={'request': request})
 
         return Response(serializer.data)
 
@@ -92,7 +92,7 @@ class NewCndidateApplicationView(APIView):
             print("judeging")
             sub_app = SubApplicationServices.CreateSubApplications(
                 application=applications,
-                ### 0 index of first phase as filtering
+                ### 1 index of first phase as judeging
                 phase=track['phases'][1]['name'],
                 pillars=track['phases'][1]['pillars'],
                 reviewer=request.user

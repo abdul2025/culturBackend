@@ -256,6 +256,10 @@ class CandidateScreening(BaseModel):
 
 
     # def updateApplicationStageToFiltering(self):
+    # TODO: Shell update the profile to be approved
+    """
+
+    """
     #     """Validate all values are the same and equal to 1"""
     #     if 1 in self.screening.values():
     #         self.application.application_stage = 1

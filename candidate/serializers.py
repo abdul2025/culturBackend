@@ -8,6 +8,24 @@ excludeFields = ('created_at', 'modified_at', 'hidden')
 
 class CandidateCustomApplicationSerializer(serializers.ModelSerializer):
     track = TracksSerializer()
+
+    rated = serializers.SerializerMethodField()
+    track_name = serializers.SerializerMethodField()
+
+    def get_track_name(self, obj):
+        return obj.track.name
+
+    def get_rated(self, obj):
+        # check if user already submitted a subapp for this as reviwer
+        request = self.context.get('request', None)
+        subapps = list(obj.candidates_application.all())
+        if subapps:
+            for sub in subapps:
+                print(type(request.user))
+                if request.user == sub.reviewer:
+                    return True
+        else:
+            return False
     class Meta:
         model = CandidateApplication
         exclude = excludeFields
@@ -24,16 +42,30 @@ def _fetchstatusStr(status):
 class CandidateAppSerializer(serializers.ModelSerializer):
     candidate_name = serializers.SerializerMethodField()
     rated = serializers.SerializerMethodField()
+    track_name = serializers.SerializerMethodField()
 
     def get_candidate_name(self, obj):
         return obj.profile.user.name
+    def get_track_name(self, obj):
+        return obj.track.name
 
     def get_rated(self, obj):
-        ## check if user already rated this application by application status
-        stage = _fetchstatusStr(obj.application_stage)
+        # check if user already submitted a subapp for this as reviwer
         request = self.context.get('request', None)
-        if request:
-            return request.user.groups.filter(name=stage).exists()
+        subapps = list(obj.candidates_application.all())
+        if subapps:
+            for sub in subapps:
+                print(type(request.user))
+                if request.user == sub.reviewer:
+                    return True
+        else:
+            return False
+
+        ## check if user already rated this application by application status
+        # stage = _fetchstatusStr(obj.application_stage)
+        # request = self.context.get('request', None)
+        # if request:
+        #     return request.user.groups.filter(name=stage).exists()
 
     class Meta:
         model = CandidateApplication
