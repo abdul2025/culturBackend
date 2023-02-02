@@ -66,6 +66,15 @@ class NewCndidateApplicationView(APIView):
         track = data.get('track')
         applications = get_application(id=appId)
 
+        try:
+            track['screening'][0]['questions']
+            track['phases'][0]['name']
+            track['phases'][0]['pillars']
+            track['phases'][1]['name']
+            track['phases'][1]['pillars']
+        except Exception as er:
+            raise APIError(Error.PHASE_NOT_FOUND, extra=[er])
+
         if stage == 0:
             data = {'application':appId,
                     'screening':track['screening'][0]['questions'],
@@ -74,6 +83,7 @@ class NewCndidateApplicationView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
 
         elif stage == 1:
             print("Filtering")
