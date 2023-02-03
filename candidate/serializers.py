@@ -84,6 +84,20 @@ class CandidateSubApplicationSerializer(serializers.ModelSerializer):
 
 
 class CandidateStandersSerializer(serializers.ModelSerializer):
+    highest_rate_score = serializers.SerializerMethodField()
+
+    def get_highest_rate_score(self, obj):
+        # pillarStanders = list(obj.pillar.pallarStander.all())
+        standers = PallarStander.objects.filter(name=obj.stander_name)
+
+        numberOfQuestions = 0
+        ### Calculate questions weight
+        for stander in standers:
+            numberOfQuestions += len(stander.pillarStanderQuestions)
+        questionHighestWeight = round(stander.pillar.weight / numberOfQuestions, 2)
+        return questionHighestWeight
+
+
     class Meta:
         model = CandidateStanders
         exclude = excludeFields

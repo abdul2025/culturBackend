@@ -40,7 +40,18 @@ class PhaseSerializer(serializers.ModelSerializer):
         exclude = excludeFields
 
 class PallarStanderSerializer(serializers.ModelSerializer):
+    highest_rate_score = serializers.SerializerMethodField()
 
+    def get_highest_rate_score(self, obj):
+        # pillarStanders = list(obj.pillar.pallarStander.all())
+        print(obj.pillar)
+        standers = PallarStander.objects.filter(pillar=obj.pillar)
+        numberOfQuestions = 0
+        ### Calculate questions weight
+        for stander in standers:
+            numberOfQuestions += len(stander.pillarStanderQuestions)
+        questionHighestWeight = round(obj.pillar.weight / numberOfQuestions, 2)
+        return questionHighestWeight
     class Meta:
         model = PallarStander
         exclude = excludeFields
