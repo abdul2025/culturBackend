@@ -88,6 +88,11 @@ class CandidateStandersSerializer(serializers.ModelSerializer):
 
     def get_highest_rate_score(self, obj):
         # pillarStanders = list(obj.pillar.pallarStander.all())
+
+
+        ### This has bad smell of retriving by name
+
+
         standers = PallarStander.objects.filter(name=obj.stander_name)
 
         numberOfQuestions = 0
