@@ -9,6 +9,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
 from .services import *
+from rest_framework import status
 
 
 # Create your views here.
@@ -94,9 +95,11 @@ class NewCndidateApplicationView(APIView):
                 pillars=track['phases'][0]['pillars'],
                 reviewer=request.user
             )
-            serializer = CandidateCaptureAppSerializer(applications)
-            return Response(serializer.data)
-
+            if sub_app:
+                serializer = CandidateCaptureAppSerializer(applications)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'Already submitted Application ID:':appId})
 
         else:
             print("judeging")
@@ -107,8 +110,11 @@ class NewCndidateApplicationView(APIView):
                 pillars=track['phases'][1]['pillars'],
                 reviewer=request.user
             )
-            serializer = CandidateCaptureAppSerializer(applications)
-            return Response(serializer.data)
+            if sub_app:
+                serializer = CandidateCaptureAppSerializer(applications)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'Already submitted Application ID:':appId})
 
         # #### New Service
         ### Create SubApplication

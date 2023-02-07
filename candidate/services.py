@@ -59,6 +59,8 @@ class SubApplicationServices:
                         stander_questions=stander['pillarStanderQuestions']
                     )
                     stander.save()
+            else:
+                return False
         ###
         # calc Phase subapp score
         # Calc pillar score
